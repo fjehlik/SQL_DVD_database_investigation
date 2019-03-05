@@ -1,0 +1,67 @@
+
+QUESTION 1:
+Create a query that lists each movie, the film category it is classified in, and the number of times it has been rented out.
+
+SELECT f.title AS film_title, c.name as film_category, COUNT(r.rental_id) AS num_rentals 
+
+FROM film f
+JOIN film_category fc 
+ON f.film_id = fc.film_id
+JOIN category c 
+ON fc.category_id = c.category_id
+JOIN inventory i 
+ON f.film_id = i.film_id
+JOIN rental r
+ON i.inventory_id = r.inventory_id 
+GROUP BY film_category, film_title
+ORDER BY film_category, film_title
+
+
+
+QUESTION 2:
+Create a query that lists the total amount of DVD rentals by film category and the amount earned in each category to determine the most popular forms of film. Note that the total amount 
+earned may not be the same as the number of rentals per category. This calculates the average per rental to determine the most profitable films per genre.  
+
+SELECT c.name as film_category, COUNT(r.rental_id) AS num_rentals, ROUND(SUM(p.amount),0) AS tot_earned, ROUND(SUM(p.amount) / COUNT(r.rental_id),2) AS avg_per_rental
+
+FROM film_category fc 
+JOIN film f
+ON f.film_id = fc.film_id
+JOIN category c 
+ON fc.category_id = c.category_id
+JOIN inventory i 
+ON f.film_id = i.film_id
+JOIN rental r
+ON i.inventory_id = r.inventory_id 
+JOIN payment p 
+ON r.rental_id = p.rental_id
+
+GROUP BY c.name 
+ORDER BY avg_per_rental DESC
+
+
+QUESTION 3:
+Create a query that determines the most profitable actor in total sales and per rental. 
+
+SELECT a.first_name || ' ' || a.last_name AS actor, COUNT(r.rental_id) AS num_rentals, ROUND(SUM(p.amount),0) AS tot_earned, ROUND(SUM(p.amount) / COUNT(r.rental_id),2) AS avg_per_rental
+FROM actor a
+JOIN film_actor fa
+ON a.actor_id = fa.actor_id
+JOIN film f
+ON fa.film_id = f.film_id
+JOIN inventory i 
+ON f.film_id = i.film_id
+JOIN rental r
+ON i.inventory_id = r.inventory_id 
+JOIN payment p 
+ON r.rental_id = p.rental_id
+GROUP by actor
+ORDER BY tot_earned DESC
+
+Question 4:  
+Create a query that determines the average monthly DVD sales, per genre, over a year to determine which film categories are popular and when they are popular. 
+
+
+
+
+
